@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 50%;
+            margin: 50px auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Settings</h1>
+        <form method="post" id="settings-form">
+            {% csrf_token %}
+            <label>Focal Length:</label>
+            <input type="text" name="focal_length" id="focal-length" value="{{ config.focal_length }}"><br>
+            <label>Confidence Threshold:</label>
+            <input type="text" name="confidence_threshold" id="confidence-threshold" value="{{ config.confidence_threshold }}"><br>
+            <label>Distance Threshold:</label>
+            <input type="text" name="distance_threshold" id="distance-threshold" value="{{ config.distance_threshold }}"><br>
+            <label>ROI X:</label>
+            <input type="text" name="roi_x" id="roi-x" value="{{ config.roi_x }}"><br>
+            <label>ROI Y:</label>
+            <input type="text" name="roi_y" id="roi-y" value="{{ config.roi_y }}"><br>
+            <label>ROI Width:</label>
+            <input type="text" name="roi_width" id="roi-width" value="{{ config.roi_width }}"><br>
+            <label>ROI Height:</label>
+            <input type="text" name="roi_height" id="roi-height" value="{{ config.roi_height }}"><br>
+            <button type="submit">Save</button>
+        </form>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#settings-form').submit(function(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '/update_config',
+                    type: 'POST',
+                    data: {
+                        'focal_length': $('#focal-length').val(),
+                        'confidence_threshold': $('#confidence-threshold').val(),
+                        'distance_threshold': $('#distance-threshold').val(),
+                        'roi_x': $('#roi-x').val(),
+                        'roi_y': $('#roi-y').val(),
+                        'roi_width': $('#roi-width').val(),
+                        'roi_height': $('#roi-height').val(),
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        if(response.status == success){
+                            alert('Settings saved successfully');
+                        }
+                        else{
+                            alert('Failed to save settings');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
